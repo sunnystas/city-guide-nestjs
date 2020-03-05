@@ -5,6 +5,9 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  await app.listen(configService.get('APP_PORT') || 3000, '0.0.0.0');
+  await app.listen(
+    configService.get('PORT') || 3000,
+    (configService.get('HOST') as string) || '0.0.0.0',
+  );
 }
 bootstrap();
