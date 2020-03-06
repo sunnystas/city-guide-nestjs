@@ -16,7 +16,7 @@ async function bootstrap() {
     .addTag(configService.get('APP_NAME'))
     .build();
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerOptions);
-  SwaggerModule.setup('api', app, swaggerDocument);
+  SwaggerModule.setup('/', app, swaggerDocument);
 
   await app.listen(
     configService.get('PORT') || 3000,
