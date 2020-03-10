@@ -1,12 +1,16 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  /* Config */
   const configService = app.get(ConfigService);
 
+  /* Swagger */
   const swaggerOptions = new DocumentBuilder()
     .setTitle('API reference')
     .setDescription(
@@ -17,6 +21,9 @@ async function bootstrap() {
     .build();
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerOptions);
   SwaggerModule.setup('/', app, swaggerDocument);
+
+  /* Validation */
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   await app.listen(
     configService.get('PORT') || 3000,

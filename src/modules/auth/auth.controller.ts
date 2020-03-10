@@ -1,12 +1,23 @@
-import { Controller, Request, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Request,
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RolesGuard } from './roles.guard';
 import { AuthService } from './auth.service';
-import { Roles } from './roles.decorator';
+import { RolesAllowed } from './roles-allowed.decorator';
+import { User } from './../../db/entity/user.entity';
+import { getManager } from 'typeorm';
 import {
   ApiBody,
   ApiCreatedResponse,
+  ApiBadRequestResponse,
   ApiUnauthorizedResponse,
   ApiInternalServerErrorResponse,
   ApiTags,
@@ -39,8 +50,29 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  @Post('signup')
+  @ApiCreatedResponse({
+    description: 'The user has been successfully created',
+    type: User,
+  })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+  })
+  async signup(@Body() userData: User) {
+    const entityManager = getManager();
+    try {
+      const newUserEntity = entityManager.create(User, userData);
+      await entityManager.save(newUserEntity);
+      const { password, ...newUser } = newUserEntity;
+      return newUser;
+    } catch (e) {
+      throw new BadRequestException(e.detail);
+    }
+  }
+
   // @todo just for testing purposes - will remove later
-  // @Roles('user')
+  // @RolesAllowed('user')
   // @UseGuards(JwtAuthGuard, RolesGuard)
   // @Get('test')
   // async test(@Request() req) {

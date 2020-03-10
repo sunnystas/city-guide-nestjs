@@ -1,6 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
+  BeforeUpdate,
+} from 'typeorm';
+import { hashSync } from 'bcrypt';
+import { IsEmail, IsNotEmpty } from 'class-validator';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  ApiHideProperty,
+} from '@nestjs/swagger';
 
-export enum UserRole {
+export enum UserRoles {
   GUEST = 'guest',
   USER = 'user',
   EDITOR = 'editor',
@@ -10,30 +23,49 @@ export enum UserRole {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
+  @ApiHideProperty()
   id: number;
 
-  @Column({ nullable: true })
-  firstName: string;
-
-  @Column({ nullable: true })
-  lastName: string;
-
-  @Column({ nullable: true })
-  phone: string;
-
   @Column({ unique: true })
+  @IsEmail()
+  @ApiProperty({ type: String })
   email: string;
 
   @Column()
+  @IsNotEmpty()
+  @ApiProperty({ type: String })
   password: string;
+
+  @Column({ nullable: true })
+  @ApiPropertyOptional({ type: String })
+  firstName?: string;
+
+  @Column({ nullable: true })
+  @ApiPropertyOptional({ type: String })
+  lastName?: string;
+
+  @Column({ nullable: true })
+  @ApiPropertyOptional({ type: String })
+  phone?: string;
 
   @Column({
     type: 'enum',
-    enum: UserRole,
-    default: UserRole.USER,
+    enum: UserRoles,
+    default: UserRoles.USER,
   })
-  role: UserRole;
+  @ApiPropertyOptional({
+    enum: UserRoles,
+    default: UserRoles.USER,
+  })
+  role?: UserRoles;
 
   @Column({ default: true })
-  isActive: boolean;
+  @ApiHideProperty()
+  isActive?: boolean;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  encryptPassword() {
+    this.password = hashSync(this.password, 10);
+  }
 }
