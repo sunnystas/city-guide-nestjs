@@ -12,7 +12,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { RolesGuard } from './roles.guard';
 import { AuthService } from './auth.service';
 import { RolesAllowed } from './roles-allowed.decorator';
-import { User } from './../../db/entity/user.entity';
+import { User } from '../../db/entity/user.entity';
 import { getManager } from 'typeorm';
 import {
   ApiBody,
