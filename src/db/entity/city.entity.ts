@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { GenericEntity } from './abstract-generic.entity';
-import { Guide } from './Guide.entity';
+import { Guide } from './guide.entity';
 import { Info } from './info.entity';
 import { Point } from './point.entity';
 import { Path } from './path.entity';

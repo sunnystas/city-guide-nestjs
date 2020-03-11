@@ -2,7 +2,7 @@ import { Column, Entity, ManyToMany, ManyToOne, JoinTable } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { City } from './city.entity';
 import { GenericEntity } from './abstract-generic.entity';
-import { Guide } from './Guide.entity';
+import { Guide } from './guide.entity';
 
 @Entity()
 export class Path extends GenericEntity {
