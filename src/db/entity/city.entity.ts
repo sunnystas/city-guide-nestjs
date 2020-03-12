@@ -11,24 +11,40 @@ export class City extends GenericEntity {
   @OneToMany(
     type => Path,
     path => path.city,
+    {
+      onDelete: 'RESTRICT',
+      cascade: true,
+    },
   )
   paths: Path[];
 
   @OneToMany(
     type => Point,
     point => point.city,
+    {
+      onDelete: 'RESTRICT',
+      cascade: true,
+    },
   )
   points: Guide[];
 
   @OneToMany(
     type => Guide,
     guide => guide.city,
+    {
+      onDelete: 'RESTRICT',
+      cascade: true,
+    },
   )
   guides: Guide[];
 
   @OneToMany(
     type => Info,
     info => info.city,
+    {
+      onDelete: 'RESTRICT',
+      cascade: true,
+    },
   )
   infos: Info[];
 

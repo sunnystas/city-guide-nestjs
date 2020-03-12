@@ -16,6 +16,10 @@ export class PointType extends GenericEntity {
   @OneToMany(
     type => Point,
     point => point.type,
+    {
+      onDelete: 'RESTRICT',
+      cascade: true,
+    },
   )
   points: Point[];
 }

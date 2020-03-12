@@ -9,10 +9,6 @@ export class Path extends GenericEntity {
   @ManyToOne(
     type => City,
     city => city.paths,
-    {
-      onDelete: 'CASCADE',
-      cascade: true,
-    },
   )
   city: City;
 

@@ -15,26 +15,22 @@ export class Point extends GenericEntity {
   @ManyToOne(
     type => PointType,
     pointType => pointType.points,
-    {
-      onDelete: 'CASCADE',
-      cascade: true,
-    },
   )
   type: PointType;
 
   @ManyToOne(
     type => City,
     city => city.points,
-    {
-      onDelete: 'CASCADE',
-      cascade: true,
-    },
   )
   city: City;
 
   @OneToMany(
     type => Rating,
     rating => rating.point,
+    {
+      onDelete: 'RESTRICT',
+      cascade: true,
+    },
   )
   ratings: Rating[];
 

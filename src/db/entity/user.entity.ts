@@ -59,7 +59,7 @@ export class User {
   })
   role?: UserRoles;
 
-  @Column({ default: true })
+  @Column({ default: false })
   @ApiHideProperty()
   isActive?: boolean;
 

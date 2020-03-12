@@ -10,10 +10,6 @@ export class Guide extends GenericEntity {
   @ManyToOne(
     type => City,
     city => city.guides,
-    {
-      onDelete: 'CASCADE',
-      cascade: true,
-    },
   )
   city: City;
 

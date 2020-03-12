@@ -12,10 +12,6 @@ export class Rating {
   @ManyToOne(
     type => Point,
     point => point.ratings,
-    {
-      onDelete: 'CASCADE',
-      cascade: true,
-    },
   )
   point: Point;
 
