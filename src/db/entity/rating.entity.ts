@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
-import { Point } from './point.entity';
+import { PointEntity } from './point.entity';
 
 @Entity()
 export class Rating {
@@ -10,10 +10,10 @@ export class Rating {
   id: number;
 
   @ManyToOne(
-    type => Point,
+    type => PointEntity,
     point => point.ratings,
   )
-  point: Point;
+  point: PointEntity;
 
   @Column()
   @IsNotEmpty()

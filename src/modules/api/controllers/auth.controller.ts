@@ -7,13 +7,10 @@ import {
   UseGuards,
   BadRequestException,
 } from '@nestjs/common';
-import { LocalAuthGuard } from './local-auth.guard';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { RolesGuard } from './roles.guard';
-import { AuthService } from './auth.service';
-import { RolesAllowed } from './roles-allowed.decorator';
-import { User } from '../../db/entity/user.entity';
-import { getManager } from 'typeorm';
+import { LocalAuthGuard } from '../guards/local-auth.guard';
+import { AuthService } from '../services/auth.service';
+import { User } from '../../../db/entity/user.entity';
+import { EntityManager } from 'typeorm';
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -26,10 +23,14 @@ import {
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly entityManager: EntityManager
+  ) { }
 
-  @UseGuards(LocalAuthGuard)
+  /* login handler */
   @Post('login')
+  @UseGuards(LocalAuthGuard)
   @ApiBody({
     schema: {
       type: 'object',
@@ -50,6 +51,7 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  /* signup handler */
   @Post('signup')
   @ApiCreatedResponse({
     description: 'The user has been successfully created',
@@ -60,22 +62,13 @@ export class AuthController {
     description: 'Internal server error',
   })
   async signup(@Body() userData: User) {
-    const entityManager = getManager();
     try {
-      const newUserEntity = entityManager.create(User, userData);
-      await entityManager.save(newUserEntity);
+      const newUserEntity = this.entityManager.create(User, userData);
+      await this.entityManager.save(User, newUserEntity);
       const { password, ...newUser } = newUserEntity;
       return newUser;
     } catch (e) {
       throw new BadRequestException(e.detail);
     }
   }
-
-  // @todo just for testing purposes - will remove later
-  // @RolesAllowed('user')
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Get('test')
-  // async test(@Request() req) {
-  //   return 'ok';
-  // }
 }

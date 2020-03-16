@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { GenericEntity } from './abstract-generic.entity';
-import { Point } from './point.entity';
+import { PointEntity } from './point.entity';
 
 @Entity()
 export class PointType extends GenericEntity {
@@ -14,12 +14,12 @@ export class PointType extends GenericEntity {
   sortOrder?: number;
 
   @OneToMany(
-    type => Point,
+    type => PointEntity,
     point => point.type,
     {
       onDelete: 'RESTRICT',
       cascade: true,
     },
   )
-  points: Point[];
+  points: PointEntity[];
 }

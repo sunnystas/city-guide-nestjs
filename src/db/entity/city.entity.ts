@@ -3,7 +3,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { GenericEntity } from './abstract-generic.entity';
 import { Guide } from './guide.entity';
 import { Info } from './info.entity';
-import { Point } from './point.entity';
+import { PointEntity } from './point.entity';
 import { Path } from './path.entity';
 
 @Entity()
@@ -19,7 +19,7 @@ export class City extends GenericEntity {
   paths: Path[];
 
   @OneToMany(
-    type => Point,
+    type => PointEntity,
     point => point.city,
     {
       onDelete: 'RESTRICT',

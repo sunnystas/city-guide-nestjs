@@ -11,7 +11,7 @@ import { GenericEntity } from './abstract-generic.entity';
 import { PointType } from './point-type.entity';
 
 @Entity()
-export class Point extends GenericEntity {
+export class PointEntity extends GenericEntity {
   @ManyToOne(
     type => PointType,
     pointType => pointType.points,

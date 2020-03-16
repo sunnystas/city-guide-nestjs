@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { ApiModule } from './modules/api/api.module';
 
 @Module({
   imports: [
-    AuthModule,
-    UsersModule,
-    TypeOrmModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot(),
+    UsersModule,
+    ApiModule,
   ],
   controllers: [],
   providers: [],
