@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, getManager } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 import { City } from '../entity/city.entity';
 
 const cities: any = [
@@ -11,9 +11,8 @@ const cities: any = [
 
 export class City1584010760036 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
-    const entityManager = getManager();
-    const cityItems = entityManager.create(City, cities);
-    await entityManager.save(cityItems);
+    const cityItems = queryRunner.manager.create(City, cities);
+    await queryRunner.manager.save(cityItems);
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {

@@ -12,13 +12,7 @@ import {
   ApiPropertyOptional,
   ApiHideProperty,
 } from '@nestjs/swagger';
-
-export enum UserRoles {
-  GUEST = 'guest',
-  USER = 'user',
-  EDITOR = 'editor',
-  ADMIN = 'admin',
-}
+import { UserRoles } from '../../common/enums/user-roles';
 
 @Entity()
 export class User {
@@ -38,11 +32,11 @@ export class User {
 
   @Column({ nullable: true })
   @ApiPropertyOptional({ type: String })
-  firstName?: string;
+  first_name?: string;
 
   @Column({ nullable: true })
   @ApiPropertyOptional({ type: String })
-  lastName?: string;
+  last_name?: string;
 
   @Column({ nullable: true })
   @ApiPropertyOptional({ type: String })
@@ -61,7 +55,7 @@ export class User {
 
   @Column({ default: false })
   @ApiHideProperty()
-  isActive?: boolean;
+  is_active?: boolean;
 
   @BeforeInsert()
   @BeforeUpdate()

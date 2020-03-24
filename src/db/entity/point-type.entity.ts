@@ -11,7 +11,7 @@ export class PointType extends GenericEntity {
 
   @Column({ type: 'smallint', nullable: true })
   @ApiPropertyOptional({ type: Number })
-  sortOrder?: number;
+  sort_order?: number;
 
   @OneToMany(
     type => PointEntity,

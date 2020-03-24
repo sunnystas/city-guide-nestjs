@@ -57,7 +57,7 @@ export class PointEntity extends GenericEntity {
 
   @Column({ nullable: true })
   @ApiPropertyOptional({ type: String })
-  workHours?: string;
+  work_hours?: string;
 
   @Column({ nullable: true, type: 'varchar', length: 50 })
   @IsEmail()

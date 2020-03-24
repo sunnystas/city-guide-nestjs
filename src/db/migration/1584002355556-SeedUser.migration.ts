@@ -1,30 +1,29 @@
-import { MigrationInterface, QueryRunner, getManager } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 import { User } from '../entity/user.entity';
 
 const users: any = [
   {
     email: 'adm@adm.adm',
     password: 'adm',
-    firstName: 'Admin',
-    lastName: 'Admin',
+    first_name: 'Admin',
+    last_name: 'Admin',
     role: 'admin',
-    isActive: true,
+    is_active: true,
   },
   {
     email: 'user@user.user',
     password: 'user',
-    firstName: 'User',
-    lastName: 'User',
+    first_name: 'User',
+    last_name: 'User',
     role: 'user',
-    isActive: true,
+    is_active: true,
   },
 ];
 
 export class SeedUser1584002355556 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
-    const entityManager = getManager();
-    const userItems = entityManager.create(User, users);
-    await entityManager.save(userItems);
+    const userItems = queryRunner.manager.create(User, users);
+    await queryRunner.manager.save(userItems);
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {

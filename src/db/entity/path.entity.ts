@@ -25,11 +25,11 @@ export class Path extends GenericEntity {
 
   @Column({ nullable: true })
   @ApiPropertyOptional({ type: Number })
-  durationHours?: number;
+  duration_hours?: number;
 
   @Column({ nullable: true })
   @ApiPropertyOptional({ type: Number })
-  lengthMetres?: number;
+  length_metres?: number;
 
   @Column({ nullable: true, type: 'character varying', array: true })
   @ApiPropertyOptional({ type: [String] })
@@ -41,5 +41,5 @@ export class Path extends GenericEntity {
 
   @Column({ nullable: true })
   @ApiPropertyOptional({ type: Date })
-  expiresAt?: Date;
+  expires_at?: Date;
 }

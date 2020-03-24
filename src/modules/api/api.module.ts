@@ -12,6 +12,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { Entities } from '../../db/entity';
+import { PointsService } from './services/points.service';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { Entities } from '../../db/entity';
   controllers: [AuthController, PointsController],
   providers: [
     AuthService,
+    PointsService,
     LocalStrategy,
     JwtStrategy,
     JwtAuthGuard,
