@@ -57,16 +57,13 @@ export class PointsService {
     
     /* analyze query params */
     if (options.id) {
-      query.where(`id = :id`, { id: options.id });
-    } else if (options.typeid && options.search) {
-      query
-        .where(`type_id = :type_id`, { type_id: options.typeid })
-        .andWhere(`LOWER(name_${options.lang}) like LOWER('%' || :search || '%')`, { search: options.search });
-      // @todo FULL-TEXT search case insensitive
-    } else if (options.typeid) {
-      query.where(`type_id = :type_id`, { type_id: options.typeid });
-    } else if (options.search) {
-      query.where(`LOWER(name_${options.lang}) like LOWER('%' || :search || '%')`, { search: options.search });
+      query.andWhere(`id = :id`, { id: options.id });
+    }
+    if (options.typeid) {
+      query.andWhere(`type_id = :type_id`, { type_id: options.typeid });
+    }
+    if (options.search) {
+      query.andWhere(`LOWER(name_${options.lang}) like LOWER('%' || :search || '%')`, { search: options.search });
       // @todo FULL-TEXT search case insensitive
     }
     
