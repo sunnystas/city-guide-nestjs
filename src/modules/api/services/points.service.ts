@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Brackets } from 'typeorm';
 import { PointEntity } from '../../../db/entity/point.entity';
 import { PointType } from '../../../db/entity/point-type.entity';
 import { City } from '../../../db/entity/city.entity';
 import { Rating } from '../../../db/entity/rating.entity';
+import { FullTextSearchHelper } from '../../../common/helpers/fts.helper';
 
 @Injectable()
 export class PointsService {
@@ -59,12 +60,16 @@ export class PointsService {
     if (options.id) {
       query.andWhere(`id = :id`, { id: options.id });
     }
+
     if (options.typeid) {
       query.andWhere(`type_id = :type_id`, { type_id: options.typeid });
     }
+
     if (options.search) {
-      query.andWhere(`LOWER(name_${options.lang}) like LOWER('%' || :search || '%')`, { search: options.search });
-      // @todo FULL-TEXT search case insensitive
+      const queryString = FullTextSearchHelper.genQueryStr('point', options);
+      if (queryString) {
+        query.andWhere(new Brackets(qb => qb.where(queryString)));
+      }
     }
     
     query
@@ -75,7 +80,7 @@ export class PointsService {
     query
       .offset(skipItemsQuantity)
       .limit(takeItemsQuantity);
-
+    
     return await query.getRawMany();
   }
 }

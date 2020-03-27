@@ -41,7 +41,7 @@ export class PointEntity extends GenericEntity {
   // top can be calculated based on ratings or just can be 0/1 values
   @Column({ nullable: true, type: 'real' })
   @ApiHideProperty()
-  private top: number;
+  private top?: number;
 
   @Column({ nullable: true, type: 'character varying', array: true })
   @ApiPropertyOptional({ type: [String] })
