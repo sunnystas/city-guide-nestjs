@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthController } from './controllers/auth.controller';
-import { PointsController } from './controllers/points.controller';
-import { AuthService } from './services/auth.service';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
@@ -13,7 +10,11 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { Entities } from '../../db/entity';
 import { PointsService } from './services/points.service';
-
+import { AuthService } from './services/auth.service';
+import { InfoService } from './services/info.service';
+import { AuthController } from './controllers/auth.controller';
+import { PointsController } from './controllers/points.controller';
+import { InfoController } from './controllers/info.controller';
 @Module({
   imports: [
     TypeOrmModule.forFeature(Entities),
@@ -28,10 +29,11 @@ import { PointsService } from './services/points.service';
       }),
     }),
   ],
-  controllers: [AuthController, PointsController],
+  controllers: [AuthController, PointsController, InfoController],
   providers: [
     AuthService,
     PointsService,
+    InfoService,
     LocalStrategy,
     JwtStrategy,
     JwtAuthGuard,
