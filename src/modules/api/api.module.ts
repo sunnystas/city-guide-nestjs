@@ -15,6 +15,7 @@ import { InfoService } from './services/info.service';
 import { AuthController } from './controllers/auth.controller';
 import { PointsController } from './controllers/points.controller';
 import { InfoController } from './controllers/info.controller';
+import { CityController } from './controllers/city.controller';
 @Module({
   imports: [
     TypeOrmModule.forFeature(Entities),
@@ -29,7 +30,12 @@ import { InfoController } from './controllers/info.controller';
       }),
     }),
   ],
-  controllers: [AuthController, PointsController, InfoController],
+  controllers: [
+    AuthController,
+    PointsController,
+    InfoController,
+    CityController,
+  ],
   providers: [
     AuthService,
     PointsService,

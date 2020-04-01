@@ -10,7 +10,6 @@ import {
   BadRequestException,
   UseInterceptors,
 } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
 import {
   ApiBody,
   ApiParam,
@@ -28,11 +27,13 @@ import { RolesGuard } from '../guards/roles.guard';
 import { Info } from '../../../db/entity/info.entity';
 import { InfoService } from './../services/info.service';
 import { Languages } from '../../../common/enums/languages';
-import { ApiHeadersInterceptor } from '../interceptors/api-headers.interceptor';
+import { ApiHeaderLangInterceptor } from '../interceptors/api-header-lang.interceptor';
+import { ApiHeaderCityInterceptor } from '../interceptors/api-header-city.interceptor';
 import { InfoDto } from '../dto/search-info-query.dto';
 
 @ApiTags('Info')
-@UseInterceptors(ApiHeadersInterceptor)
+@UseInterceptors(ApiHeaderLangInterceptor)
+@UseInterceptors(ApiHeaderCityInterceptor)
 @Controller('api/info')
 export class InfoController {
   constructor(

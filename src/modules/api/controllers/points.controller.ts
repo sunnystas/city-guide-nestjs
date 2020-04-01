@@ -13,7 +13,6 @@ import {
   BadRequestException,
   UseInterceptors,
 } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
 import {
   ApiHeader,
   ApiBody,
@@ -33,10 +32,12 @@ import { PointEntity } from '../../../db/entity/point.entity';
 import { PointsService } from './../services/points.service';
 import { SearchQueryDto } from '../dto/search-query.dto';
 import { Languages } from '../../../common/enums/languages';
-import { ApiHeadersInterceptor } from '../interceptors/api-headers.interceptor';
+import { ApiHeaderLangInterceptor } from '../interceptors/api-header-lang.interceptor';
+import { ApiHeaderCityInterceptor } from '../interceptors/api-header-city.interceptor';
 
 @ApiTags('Points')
-@UseInterceptors(ApiHeadersInterceptor)
+@UseInterceptors(ApiHeaderLangInterceptor)
+@UseInterceptors(ApiHeaderCityInterceptor)
 @Controller('api/points')
 export class PointsController {
   constructor(
