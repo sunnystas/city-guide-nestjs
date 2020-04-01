@@ -14,10 +14,25 @@ export class InfoService {
       .createQueryBuilder()
       .select(`info.name_${options.lang}`, `title`)
       .addSelect(`info.description_${options.lang}`, `content`)
-      .addSelect(`info.section_name`, `section`)
+      .addSelect(`info.section`, `section`)
       .from(Info, 'info')
       .where({ city: options.cityId })
-      .andWhere(`info.section_name = :name`, { name: options.sectionName })
+      .andWhere(`info.section = :name`, { name: options.section })
       .getRawOne();
+  }
+
+  async createOrUpdate(infoData: Info): Promise<Info> {
+    const infoItem = this.infoRepository.find({
+      where: { section: infoData.section }
+    });
+    if (infoItem) {
+      await this.infoRepository.update({ section: infoData.section }, infoData);
+      return await this.infoRepository.findOne({
+        where: { section: infoData.section }
+      });
+    } else {
+      const newInfoItem = await this.infoRepository.create(infoData);
+      return this.infoRepository.save(newInfoItem);
+    }
   }
 }

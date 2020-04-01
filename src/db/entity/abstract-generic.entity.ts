@@ -3,7 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 import {
   ApiProperty,
   ApiPropertyOptional,
@@ -23,21 +23,31 @@ export abstract class GenericEntity {
 
   @Column({ nullable: true, type: 'text' })
   @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
   description_uk?: string;
 
   @Column({ nullable: true, type: 'character varying', length: 255 })
   @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
   name_ru?: string;
 
   @Column({ nullable: true, type: 'text' })
   @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
   description_ru?: string;
 
   @Column({ nullable: true, type: 'character varying', length: 255 })
   @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
   name_en?: string;
 
   @Column({ nullable: true, type: 'text' })
   @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
   description_en?: string;
 }

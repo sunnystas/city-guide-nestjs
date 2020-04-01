@@ -29,6 +29,7 @@ import { Info } from '../../../db/entity/info.entity';
 import { InfoService } from './../services/info.service';
 import { Languages } from '../../../common/enums/languages';
 import { ApiHeadersInterceptor } from '../interceptors/api-headers.interceptor';
+import { InfoDto } from '../dto/search-info-query.dto';
 
 @ApiTags('Info')
 @UseInterceptors(ApiHeadersInterceptor)
@@ -39,7 +40,7 @@ export class InfoController {
   ) { }
 
   @ApiOkResponse({
-    description: `Info section data`,
+    description: `Info data`,
     schema: {
       type: `object`,
       properties: {
@@ -53,9 +54,29 @@ export class InfoController {
   async get(
     @Headers('accept-language') lang: Languages,
     @Headers('x-city') cityId: number,
-    @Query(`name`) sectionName: string,
+    @Query() queryData: InfoDto,
   ) {
-    return await this.infoService.find({ lang, cityId, sectionName });
+    const section = queryData.section;
+    return await this.infoService.find({ lang, cityId, section });
+  }
+
+  @ApiOkResponse({
+    description: `Info item has been successfully created or updated`,
+    type: Info,
+  })
+  @ApiBadRequestResponse({
+    description: 'Wrong header(s) or query parameter(s)',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+  })
+  @Put()
+  async createOrUpdate(
+    @Headers('x-city') city: number,
+    @Body() infoReqData: Info,
+  ) {
+    const infoData = Object.assign(infoReqData, { city });
+    return await this.infoService.createOrUpdate(infoData);
   }
 
 }

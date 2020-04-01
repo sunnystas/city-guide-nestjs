@@ -6,7 +6,7 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import { hashSync } from 'bcrypt';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsString, IsOptional } from 'class-validator';
 import {
   ApiProperty,
   ApiPropertyOptional,
@@ -32,14 +32,20 @@ export class User {
 
   @Column({ nullable: true })
   @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
   first_name?: string;
 
   @Column({ nullable: true })
   @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
   last_name?: string;
 
   @Column({ nullable: true })
   @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
   phone?: string;
 
   @Column({
