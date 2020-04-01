@@ -16,6 +16,7 @@ import { AuthController } from './controllers/auth.controller';
 import { PointsController } from './controllers/points.controller';
 import { InfoController } from './controllers/info.controller';
 import { CityController } from './controllers/city.controller';
+import { LanguageController } from './controllers/language.controller';
 @Module({
   imports: [
     TypeOrmModule.forFeature(Entities),
@@ -35,6 +36,7 @@ import { CityController } from './controllers/city.controller';
     PointsController,
     InfoController,
     CityController,
+    LanguageController,
   ],
   providers: [
     AuthService,
