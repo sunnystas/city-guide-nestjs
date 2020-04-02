@@ -1,22 +1,23 @@
 import {
   Controller,
   Headers,
-  Request,
   Get,
   Put,
   Query,
   Body,
   Res,
+  Delete,
   UseGuards,
-  BadRequestException,
   UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBody,
   ApiParam,
   ApiQuery,
+  ApiResponse,
   ApiOkResponse,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
   ApiInternalServerErrorResponse,
@@ -33,6 +34,7 @@ import { Languages } from '../../../common/enums/languages';
 import { ApiHeaderLangInterceptor } from '../interceptors/api-header-lang.interceptor';
 import { ApiHeaderCityInterceptor } from '../interceptors/api-header-city.interceptor';
 import { InfoDto } from '../dto/search-info-query.dto';
+import { DeleteDto } from '../dto/delete-query.dto';
 
 @ApiTags('Info')
 @UseInterceptors(ApiHeaderLangInterceptor)
@@ -99,4 +101,32 @@ export class InfoController {
     return res.status(statusCode).send(item);
   }
 
+  /* DELETE info */
+  @ApiQuery({
+    name: 'id',
+    schema: {
+      type: 'number'
+    },
+    required: true,
+    description: `Info item ID`,
+  })
+  @ApiResponse({
+    status: 204,
+    description: `Info item successfully deleted`,
+  })
+  @ApiNotFoundResponse({ description: `Info item not found` })
+  @Delete()
+  async delete(
+    @Headers('accept-language') lang: Languages,
+    @Headers('x-city') city: number,
+    @Query() params: DeleteDto,
+    @Res() res,
+  ) {
+    const result = await this.entityManager.delete(Info, { id: params.id, city: city });
+    if (result.affected) {
+      return res.status(204).send();
+    } else {
+      return res.status(404).send();
+    }
+  }
 }
