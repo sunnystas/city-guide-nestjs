@@ -12,6 +12,7 @@ import {
   UseGuards,
   BadRequestException,
   UseInterceptors,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiHeader,
@@ -142,15 +143,15 @@ export class PointsController {
   @Get()
   async get(
     @Headers('accept-language') lang: Languages,
-    @Headers('x-city') cityId: number,
+    @Headers('x-city') city: number,
     @Query() searchQueryParams: SearchQueryDto
   ) {
-    const options = Object.assign(searchQueryParams, { lang, cityId });
-    return await this.pointsService.find(options);
+    Object.assign(searchQueryParams, { lang, city });
+    return await this.pointsService.find(searchQueryParams);
   }
 
   @ApiOkResponse({
-    description: `Point successfully created`,
+    description: `Point successfully created or updated`,
     type: PointEntity,
   })
   @ApiBadRequestResponse({
@@ -159,17 +160,13 @@ export class PointsController {
   @ApiInternalServerErrorResponse({
     description: 'Internal server error',
   })
-  @Post()
+  @Put()
   async create(
     @Headers('accept-language') lang: Languages,
-    @Headers('x-city') cityId: number,
+    @Headers('x-city') city: number,
     @Body() pointParams: PointEntity,
   ) {
-    Object.assign(pointParams, { city: +cityId });
-    try {
-      return await this.pointsService.createOrUpdate(pointParams);
-    } catch (e) {
-      throw new BadRequestException(e.detail.toString());
-    }
+    Object.assign(pointParams, { city });
+    return await this.pointsService.createOrUpdate(pointParams);
   }
 }

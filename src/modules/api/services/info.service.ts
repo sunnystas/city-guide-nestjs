@@ -16,13 +16,13 @@ export class InfoService {
       .addSelect(`info.description_${options.lang}`, `content`)
       .addSelect(`info.section`, `section`)
       .from(Info, 'info')
-      .where({ city: options.cityId })
+      .where({ city: options.city })
       .andWhere(`info.section = :name`, { name: options.section })
       .getRawOne();
   }
 
   async createOrUpdate(infoData: Info): Promise<Info> {
-    const infoItem = this.infoRepository.find({
+    const infoItem = await this.infoRepository.findOne({
       where: { section: infoData.section }
     });
     if (infoItem) {
@@ -31,8 +31,7 @@ export class InfoService {
         where: { section: infoData.section }
       });
     } else {
-      const newInfoItem = await this.infoRepository.create(infoData);
-      return this.infoRepository.save(newInfoItem);
+      return await this.infoRepository.save(infoData);
     }
   }
 }

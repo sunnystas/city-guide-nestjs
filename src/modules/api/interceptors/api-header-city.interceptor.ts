@@ -8,6 +8,7 @@ export class ApiHeaderCityInterceptor implements NestInterceptor {
     if (!req.headers['x-city'] || isNaN(req.headers['x-city'])) {
       throw new BadRequestException('X-City header is missing or is NaN');
     }
+    req.headers['x-city'] = +req.headers['x-city'];
     return next.handle();
   }
 }

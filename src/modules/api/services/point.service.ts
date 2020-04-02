@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Brackets } from 'typeorm';
+import { Repository, Brackets, createQueryBuilder } from 'typeorm';
 import { PointEntity } from '../../../db/entity/point.entity';
 import { PointType } from '../../../db/entity/point-type.entity';
 import { City } from '../../../db/entity/city.entity';
@@ -54,7 +54,7 @@ export class PointsService {
           .addSelect(`city.name_${options.lang}`, `city_name`)
           .from(City, `city`)
       }, 'city', `point.city = city.city_id`)
-      .where('city.city_id = :cityid', { cityid: options.cityId });
+      .where('city.city_id = :cityid', { cityid: options.city });
     
     /* analyze query params */
     if (options.id) {
@@ -84,7 +84,17 @@ export class PointsService {
     return await query.getRawMany();
   }
 
-  async createOrUpdate(point): Promise<PointEntity[]> {
-    return await this.pointsRepository.save(point);
+  async createOrUpdate(point): Promise<PointEntity> {
+    const whereCond = {
+      name_uk: point.name_uk,
+      type: point.type,
+    };
+    const pointItem = await this.pointsRepository.findOne({ where: whereCond });
+    if (!pointItem) {
+      return await this.pointsRepository.save(point);
+    } else {
+      await this.pointsRepository.update(whereCond, point);
+      return await this.pointsRepository.findOne({ where: whereCond });
+    }
   }
 }

@@ -54,11 +54,11 @@ export class InfoController {
   @Get()
   async get(
     @Headers('accept-language') lang: Languages,
-    @Headers('x-city') cityId: number,
+    @Headers('x-city') city: number,
     @Query() queryData: InfoDto,
   ) {
     const section = queryData.section;
-    return await this.infoService.find({ lang, cityId, section });
+    return await this.infoService.find({ lang, city, section });
   }
 
   @ApiOkResponse({
