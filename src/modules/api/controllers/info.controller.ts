@@ -65,8 +65,12 @@ export class InfoController {
     return await this.infoService.find({ lang, city, section });
   }
 
+  @ApiCreatedResponse({
+    description: `Info item has been successfully created`,
+    type: Info,
+  })
   @ApiOkResponse({
-    description: `Info item has been successfully created or updated`,
+    description: `Info item has been successfully updated`,
     type: Info,
   })
   @ApiBadRequestResponse({

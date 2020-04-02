@@ -154,8 +154,12 @@ export class PointsController {
     return await this.pointsService.find(searchQueryParams);
   }
 
+  @ApiCreatedResponse({
+    description: `Point successfully created`,
+    type: PointEntity,
+  })
   @ApiOkResponse({
-    description: `Point successfully created or updated`,
+    description: `Point successfully updated`,
     type: PointEntity,
   })
   @ApiBadRequestResponse({
