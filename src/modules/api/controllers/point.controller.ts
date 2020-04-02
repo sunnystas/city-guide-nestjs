@@ -1,29 +1,21 @@
 import {
   Controller,
   Headers,
-  Request,
   Get,
-  Post,
   Put,
   Delete,
   Query,
-  Param,
   Body,
   Res,
-  UseGuards,
-  BadRequestException,
   UseInterceptors,
-  ParseIntPipe,
 } from '@nestjs/common';
 import {
-  ApiHeader,
-  ApiBody,
-  ApiParam,
   ApiQuery,
+  ApiResponse,
   ApiOkResponse,
+  ApiNotFoundResponse,
   ApiCreatedResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse,
   ApiInternalServerErrorResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -35,6 +27,7 @@ import { RolesGuard } from '../guards/roles.guard';
 import { PointEntity } from '../../../db/entity/point.entity';
 import { PointsService } from '../services/point.service';
 import { SearchQueryDto } from '../dto/search-query.dto';
+import { DeleteDto } from '../dto/delete-query.dto';
 import { Languages } from '../../../common/enums/languages';
 import { ApiHeaderLangInterceptor } from '../interceptors/api-header-lang.interceptor';
 import { ApiHeaderCityInterceptor } from '../interceptors/api-header-city.interceptor';
@@ -154,6 +147,7 @@ export class PointsController {
     return await this.pointsService.find(searchQueryParams);
   }
 
+  /* PUT points (create or update) */
   @ApiCreatedResponse({
     description: `Point successfully created`,
     type: PointEntity,
@@ -190,5 +184,34 @@ export class PointsController {
       item = await this.entityManager.findOne(PointEntity, { where: whereCond });
     }
     return res.status(statusCode).send(item);
+  }
+
+  /* DELETE points */
+  @ApiQuery({
+    name: 'id',
+    schema: {
+      type: 'number'
+    },
+    required: true,
+    description: `Point ID`,
+  })
+  @ApiResponse({
+    status: 204,
+    description: `Point successfully deleted`,
+  })
+  @ApiNotFoundResponse({ description: `Point not found` })
+  @Delete()
+  async delete(
+    @Headers('accept-language') lang: Languages,
+    @Headers('x-city') city: number,
+    @Query() params: DeleteDto,
+    @Res() res,
+  ) {
+    const result = await this.entityManager.delete(PointEntity, { id: params.id, city: city });
+    if (result.affected) {
+      return res.status(204).send();
+    } else {
+      return res.status(404).send();
+    }
   }
 }
