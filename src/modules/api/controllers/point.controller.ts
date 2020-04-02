@@ -9,6 +9,7 @@ import {
   Query,
   Param,
   Body,
+  Res,
   UseGuards,
   BadRequestException,
   UseInterceptors,
@@ -26,6 +27,8 @@ import {
   ApiInternalServerErrorResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { InjectEntityManager } from '@nestjs/typeorm'; 
+import { EntityManager } from 'typeorm';
 import { RolesAllowed } from '../decorators/roles-allowed.decorator';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
@@ -42,6 +45,7 @@ import { ApiHeaderCityInterceptor } from '../interceptors/api-header-city.interc
 @Controller('api/points')
 export class PointsController {
   constructor(
+    @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly pointsService: PointsService,
   ) { }
 
@@ -161,12 +165,26 @@ export class PointsController {
     description: 'Internal server error',
   })
   @Put()
-  async create(
+  async createOrUpdate(
     @Headers('accept-language') lang: Languages,
     @Headers('x-city') city: number,
     @Body() pointParams: PointEntity,
+    @Res() res,
   ) {
     Object.assign(pointParams, { city });
-    return await this.pointsService.createOrUpdate(pointParams);
+    let item, statusCode = 200;
+    const whereCond = {
+      name_uk: pointParams.name_uk,
+      type: pointParams.type,
+    };
+    const pointItem = await this.entityManager.findOne(PointEntity, { where: whereCond });
+    if (!pointItem) {
+      item = await this.entityManager.save(PointEntity, pointParams);
+      statusCode = 201;
+    } else {
+      await this.entityManager.update(PointEntity, whereCond, pointParams);
+      item = await this.entityManager.findOne(PointEntity, { where: whereCond });
+    }
+    return res.status(statusCode).send(item);
   }
 }

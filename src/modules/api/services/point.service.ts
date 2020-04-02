@@ -83,18 +83,4 @@ export class PointsService {
     
     return await query.getRawMany();
   }
-
-  async createOrUpdate(point): Promise<PointEntity> {
-    const whereCond = {
-      name_uk: point.name_uk,
-      type: point.type,
-    };
-    const pointItem = await this.pointsRepository.findOne({ where: whereCond });
-    if (!pointItem) {
-      return await this.pointsRepository.save(point);
-    } else {
-      await this.pointsRepository.update(whereCond, point);
-      return await this.pointsRepository.findOne({ where: whereCond });
-    }
-  }
 }

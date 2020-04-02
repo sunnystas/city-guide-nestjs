@@ -6,6 +6,7 @@ import {
   Put,
   Query,
   Body,
+  Res,
   UseGuards,
   BadRequestException,
   UseInterceptors,
@@ -21,6 +22,8 @@ import {
   ApiInternalServerErrorResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { InjectEntityManager } from '@nestjs/typeorm'; 
+import { EntityManager } from 'typeorm';
 import { RolesAllowed } from '../decorators/roles-allowed.decorator';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
@@ -37,6 +40,7 @@ import { InfoDto } from '../dto/search-info-query.dto';
 @Controller('api/info')
 export class InfoController {
   constructor(
+    @InjectEntityManager() private readonly entityManager: EntityManager,
     private readonly infoService: InfoService,
   ) { }
 
@@ -74,10 +78,21 @@ export class InfoController {
   @Put()
   async createOrUpdate(
     @Headers('x-city') city: number,
-    @Body() infoReqData: Info,
+    @Body() infoData: Info,
+    @Res() res,
   ) {
-    const infoData = Object.assign(infoReqData, { city });
-    return await this.infoService.createOrUpdate(infoData);
+    Object.assign(infoData, { city });
+    let item, statusCode = 200;
+    const whereCond = { section: infoData.section };
+    const infoItem = await this.entityManager.findOne(Info, { where: whereCond });
+    if (!infoItem) {
+      item = await this.entityManager.save(Info, infoData);
+      statusCode = 201;
+    } else {
+      await this.entityManager.update(Info, whereCond, infoData);
+      item = await this.entityManager.findOne(Info, { where: whereCond });
+    }
+    return res.status(statusCode).send(item);
   }
 
 }

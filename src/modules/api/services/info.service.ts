@@ -20,18 +20,4 @@ export class InfoService {
       .andWhere(`info.section = :name`, { name: options.section })
       .getRawOne();
   }
-
-  async createOrUpdate(infoData: Info): Promise<Info> {
-    const infoItem = await this.infoRepository.findOne({
-      where: { section: infoData.section }
-    });
-    if (infoItem) {
-      await this.infoRepository.update({ section: infoData.section }, infoData);
-      return await this.infoRepository.findOne({
-        where: { section: infoData.section }
-      });
-    } else {
-      return await this.infoRepository.save(infoData);
-    }
-  }
 }
