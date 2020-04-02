@@ -29,7 +29,7 @@ import { RolesAllowed } from '../decorators/roles-allowed.decorator';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { PointEntity } from '../../../db/entity/point.entity';
-import { PointsService } from './../services/points.service';
+import { PointsService } from '../services/point.service';
 import { SearchQueryDto } from '../dto/search-query.dto';
 import { Languages } from '../../../common/enums/languages';
 import { ApiHeaderLangInterceptor } from '../interceptors/api-header-lang.interceptor';
@@ -147,5 +147,29 @@ export class PointsController {
   ) {
     const options = Object.assign(searchQueryParams, { lang, cityId });
     return await this.pointsService.find(options);
+  }
+
+  @ApiOkResponse({
+    description: `Point successfully created`,
+    type: PointEntity,
+  })
+  @ApiBadRequestResponse({
+    description: 'Wrong header(s) or query parameter(s)',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+  })
+  @Post()
+  async create(
+    @Headers('accept-language') lang: Languages,
+    @Headers('x-city') cityId: number,
+    @Body() pointParams: PointEntity,
+  ) {
+    Object.assign(pointParams, { city: +cityId });
+    try {
+      return await this.pointsService.createOrUpdate(pointParams);
+    } catch (e) {
+      throw new BadRequestException(e.detail.toString());
+    }
   }
 }

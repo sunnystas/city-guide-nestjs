@@ -83,4 +83,8 @@ export class PointsService {
     
     return await query.getRawMany();
   }
+
+  async createOrUpdate(point): Promise<PointEntity[]> {
+    return await this.pointsRepository.save(point);
+  }
 }

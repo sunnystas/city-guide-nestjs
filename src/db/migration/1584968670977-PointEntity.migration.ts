@@ -26,7 +26,7 @@ export class PointEntity1584968670977 implements MigrationInterface {
         phone: '+38099-999-99-99',
       },
       {
-        name_uk: 'Деяка точка на мапі',
+        name_uk: 'Деяка точка на мапі 2',
         description_uk: 'Деяка точка на мапі приклад щоб було',
         name_ru: 'Точка на карте',
         description_ru: 'Какая-то точка на карте пример чтобы было',
