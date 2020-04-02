@@ -199,6 +199,7 @@ export class PointsController {
     status: 204,
     description: `Point successfully deleted`,
   })
+  @ApiBadRequestResponse({ description: `Wrong query params` })
   @ApiNotFoundResponse({ description: `Point not found` })
   @Delete()
   async delete(
@@ -207,11 +208,17 @@ export class PointsController {
     @Query() params: DeleteDto,
     @Res() res,
   ) {
-    const result = await this.entityManager.delete(PointEntity, { id: params.id, city: city });
-    if (result.affected) {
-      return res.status(204).send();
-    } else {
-      return res.status(404).send();
+    let statusCode = 204, message = `Deleted`;
+    try {
+      const result = await this.entityManager.delete(PointEntity, { id: params.id, city: city });
+      if (!result.affected) {
+        statusCode = 404;
+        message = 'Point not found';
+      }
+    } catch (e) {
+      statusCode = 400;
+      message = e.detail;
     }
+    return res.status(statusCode).send(message);
   }
 }
