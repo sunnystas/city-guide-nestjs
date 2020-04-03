@@ -44,6 +44,63 @@ export class PathsController {
     private readonly pathService: PathService,
   ) { }
 
+  /* GET paths */
+  @ApiQuery({
+    name: 'id',
+    schema: {
+      type: 'number'
+    },
+    required: false,
+    description: 'Point id',
+  })
+  @ApiQuery({
+    name: 'search',
+    schema: {
+      type: 'string'
+    },
+    required: false,
+    description: 'Search by name or description',
+  })
+  @ApiQuery({
+    name: 'page',
+    schema: {
+      type: 'number'
+    },
+    required: false,
+    description: 'Extract page #',
+  })
+  @ApiQuery({
+    name: 'itemsperpage',
+    schema: {
+      type: 'number'
+    },
+    required: false,
+    description: 'Set the amount of items per page',
+  })
+  @ApiBadRequestResponse({
+    description: 'Wrong header(s) or query parameter(s)',
+  })
+  @ApiNotFoundResponse({
+    description: `No paths found`
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+  })
+  @Get()
+  async get(
+    @Headers('accept-language') lang: Languages,
+    @Headers('x-city') city: number,
+    @Query() searchQueryParams: SearchQueryDto
+  ) {
+    Object.assign(searchQueryParams, { lang, city });
+    const items = await this.pathService.find(searchQueryParams);
+    if (items.length) {
+      return items;
+    } else {
+      throw new NotFoundException();
+    }
+  }
+
   /* PUT paths (create or update) */
   @ApiCreatedResponse({
     description: `Path successfully created`,

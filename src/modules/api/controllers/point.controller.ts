@@ -9,6 +9,7 @@ import {
   Res,
   UseInterceptors,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiQuery,
