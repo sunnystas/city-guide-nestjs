@@ -186,7 +186,8 @@ export class PointsController {
     };
     const pointItem = await this.entityManager.findOne(PointEntity, { where: whereCond });
     if (!pointItem) {
-      item = await this.entityManager.save(PointEntity, pointParams);
+      const { name_uk, ...cleanParams } = pointParams;
+      item = await this.entityManager.save(PointEntity, cleanParams);
       statusCode = 201;
     } else {
       await this.entityManager.update(PointEntity, whereCond, pointParams);

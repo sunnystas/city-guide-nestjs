@@ -12,11 +12,13 @@ import { Entities } from '../../db/entity';
 import { PointsService } from './services/point.service';
 import { AuthService } from './services/auth.service';
 import { InfoService } from './services/info.service';
+import { PathService } from './services/path.service';
 import { AuthController } from './controllers/auth.controller';
 import { PointsController } from './controllers/point.controller';
 import { InfoController } from './controllers/info.controller';
 import { CityController } from './controllers/city.controller';
 import { LanguageController } from './controllers/language.controller';
+import { PathsController } from './controllers/path.controller';
 @Module({
   imports: [
     TypeOrmModule.forFeature(Entities),
@@ -37,11 +39,13 @@ import { LanguageController } from './controllers/language.controller';
     InfoController,
     CityController,
     LanguageController,
+    PathsController,
   ],
   providers: [
     AuthService,
     PointsService,
     InfoService,
+    PathService,
     LocalStrategy,
     JwtStrategy,
     JwtAuthGuard,
