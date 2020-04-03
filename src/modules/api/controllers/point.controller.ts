@@ -182,7 +182,7 @@ export class PointsController {
     let item, statusCode = 200;
     const whereCond = {
       name_uk: pointParams.name_uk,
-      type: pointParams.type,
+      city: city,
     };
     const pointItem = await this.entityManager.findOne(PointEntity, { where: whereCond });
     if (!pointItem) {

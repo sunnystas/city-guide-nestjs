@@ -12,7 +12,7 @@ import { GenericEntity } from './abstract-generic.entity';
 import { PointType } from './point-type.entity';
 
 @Entity()
-@Index([`name_uk`, `type`], { unique: true })
+@Index([`name_uk`, `city`], { unique: true })
 export class PointEntity extends GenericEntity {
   @ManyToOne(
     type => PointType,
