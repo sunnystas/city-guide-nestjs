@@ -18,6 +18,7 @@ export class PointEntity extends GenericEntity {
     type => PointType,
     pointType => pointType.points,
   )
+  @ApiProperty({ type: Number })
   @IsNotEmpty()
   @Type(() => Number)
   @IsNumber()

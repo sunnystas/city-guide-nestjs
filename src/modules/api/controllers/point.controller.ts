@@ -8,6 +8,7 @@ import {
   Body,
   Res,
   UseInterceptors,
+  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiQuery,
@@ -134,6 +135,9 @@ export class PointsController {
   @ApiBadRequestResponse({
     description: 'Wrong header(s) or query parameter(s)',
   })
+  @ApiNotFoundResponse({
+    description: `No points found`
+  })
   @ApiInternalServerErrorResponse({
     description: 'Internal server error',
   })
@@ -144,7 +148,12 @@ export class PointsController {
     @Query() searchQueryParams: SearchQueryDto
   ) {
     Object.assign(searchQueryParams, { lang, city });
-    return await this.pointsService.find(searchQueryParams);
+    const items = await this.pointsService.find(searchQueryParams);
+    if (items.length) {
+      return items;
+    } else {
+      throw new NotFoundException();
+    }
   }
 
   /* PUT points (create or update) */
