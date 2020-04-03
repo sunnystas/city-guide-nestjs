@@ -20,6 +20,7 @@ import { ApiHeaderLangInterceptor } from '../interceptors/api-header-lang.interc
 export class CityController {
   constructor( private readonly entityManager: EntityManager ) { }
 
+  /* GET cities */
   @ApiOkResponse({
     description: `Array of available cities`,
     schema: {
@@ -27,6 +28,7 @@ export class CityController {
       items: {
         type: `object`,
         properties: {
+          id: { type: 'number' },
           name: { type: `string` },
           coords: {
             type: `object`,
@@ -48,7 +50,8 @@ export class CityController {
   ): Promise<City[]> {
     return await this.entityManager
       .createQueryBuilder(City, `city`)
-      .select(`name_${lang}`, `name`)
+      .select(`id`)
+      .addSelect(`name_${lang}`, `name`)
       .addSelect(`coords`)
       .getRawMany();
   }
