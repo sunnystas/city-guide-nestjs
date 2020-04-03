@@ -7,37 +7,29 @@ import {
   Body,
   Res,
   Delete,
-  UseGuards,
   UseInterceptors,
+  NotFoundException,
 } from '@nestjs/common';
 import {
-  ApiBody,
-  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiOkResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse,
   ApiInternalServerErrorResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { InjectEntityManager } from '@nestjs/typeorm'; 
 import { EntityManager } from 'typeorm';
-import { RolesAllowed } from '../decorators/roles-allowed.decorator';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import { RolesGuard } from '../guards/roles.guard';
 import { Info } from '../../../db/entity/info.entity';
 import { InfoService } from './../services/info.service';
 import { Languages } from '../../../common/enums/languages';
 import { ApiHeaderLangInterceptor } from '../interceptors/api-header-lang.interceptor';
 import { ApiHeaderCityInterceptor } from '../interceptors/api-header-city.interceptor';
-import { InfoDto } from '../dto/search-info-query.dto';
 import { DeleteDto } from '../dto/delete-query.dto';
 
 @ApiTags('Info')
-@UseInterceptors(ApiHeaderLangInterceptor)
 @UseInterceptors(ApiHeaderCityInterceptor)
 @Controller('api/info')
 export class InfoController {
@@ -46,27 +38,42 @@ export class InfoController {
     private readonly infoService: InfoService,
   ) { }
 
+  /* GET info */
   @ApiOkResponse({
-    description: `Info data`,
+    description: `Info items`,
     schema: {
-      type: `object`,
-      properties: {
-        title: { type: `string` },
-        content: { type: `string` },
-        section: { type: `string` },
+      type: `array`,
+      items: {
+        type: `object`,
+        properties: {
+          title: { type: `string` },
+          content: { type: `string` },
+          section: { type: `string` },
+        }
       }
     }
   })
+  @ApiBadRequestResponse({
+    description: 'Wrong header(s) or query parameter(s)',
+  })
+  @ApiNotFoundResponse({
+    description: `No info items found`
+  })
+  @UseInterceptors(ApiHeaderLangInterceptor)
   @Get()
   async get(
     @Headers('accept-language') lang: Languages,
     @Headers('x-city') city: number,
-    @Query() queryData: InfoDto,
   ) {
-    const section = queryData.section;
-    return await this.infoService.find({ lang, city, section });
+    const infoItems = await this.infoService.find({ lang, city });
+    if ( infoItems.length ) {
+      return infoItems;
+    } else {
+      throw new NotFoundException();
+    }
   }
 
+  /* PUT info */
   @ApiCreatedResponse({
     description: `Info item has been successfully created`,
     type: Info,
@@ -117,7 +124,6 @@ export class InfoController {
   @ApiNotFoundResponse({ description: `Info item not found` })
   @Delete()
   async delete(
-    @Headers('accept-language') lang: Languages,
     @Headers('x-city') city: number,
     @Query() params: DeleteDto,
     @Res() res,

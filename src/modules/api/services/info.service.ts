@@ -9,15 +9,14 @@ export class InfoService {
     @InjectRepository(Info) private readonly infoRepository: Repository<Info>,
   ) { }
 
-  async find(options): Promise<Info> {
+  async find(options): Promise<Info[]> {
+    const title = `"info"."name_${options.lang}"`;
     return await this.infoRepository
-      .createQueryBuilder()
-      .select(`info.name_${options.lang}`, `title`)
-      .addSelect(`info.description_${options.lang}`, `content`)
-      .addSelect(`info.section`, `section`)
-      .from(Info, 'info')
+      .createQueryBuilder(`info`)
+      .select(`"info"."name_${options.lang}"`, `title`)
+      .addSelect(`"info"."description_${options.lang}"`, `content`)
+      .addSelect(`"info"."section"`, `section`)
       .where({ city: options.city })
-      .andWhere(`info.section = :name`, { name: options.section })
-      .getRawOne();
+      .getRawMany();
   }
 }
