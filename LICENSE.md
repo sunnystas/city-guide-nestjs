@@ -1,2 +1,1 @@
-
-### Copyright (C) "Інститут розвитку міста Кривого Рогу" 2020
+### Copyright (C) Stanislav Romanov 2020
